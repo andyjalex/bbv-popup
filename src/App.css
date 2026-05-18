@@ -1,69 +1,222 @@
+:root {
+  --ink: #171717;
+  --muted: #626262;
+  --line: #d9d4c8;
+  --paper: #fffdf8;
+  --sand: #f6efdf;
+  --sea: #087f8c;
+  --sea-dark: #075c66;
+  --grass: #218450;
+  --grass-soft: #e7f5ee;
+  --sun: #ffcf3f;
+  --coral: #f46d4f;
+  --error-bg: #fdecec;
+  --error-line: #d66a6a;
+  --error-text: #7a1f1f;
+  --shadow: 0 16px 40px rgba(23, 23, 23, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
 .App {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(255, 207, 63, 0.16), transparent 28rem),
+    var(--paper);
   text-align: center;
-  
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Graphik", Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 h1 {
-  font-family: "Graphik";
-  font-weight: 700;
+  max-width: 840px;
+  margin: 0 auto 1rem;
+  font-size: clamp(2.4rem, 8vw, 5.6rem);
+  line-height: 0.95;
+}
+
+h2 {
+  margin-bottom: 0.75rem;
+  font-size: clamp(1.7rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+h3 {
+  margin-bottom: 0.85rem;
+  font-size: 1.05rem;
+  line-height: 1.25;
 }
 
 p {
-  font-family: "Graphik";
+  font-family: "Graphik", Arial, sans-serif;
   font-weight: 400;
+  line-height: 1.65;
 }
 
 .hero {
-  background-color: #ccc;
-  padding: 2rem;
-} 
-
-.eventInfo {
-  display: flex; 
+  display: flex;
+  min-height: calc(100vh - 5rem);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  padding-right: 4rem;
-  padding-left: 4rem;
-
-
+  padding: clamp(3rem, 9vw, 6.5rem) 1.25rem;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255, 207, 63, 0.42), transparent 21rem),
+    linear-gradient(135deg, #fff6d8 0%, #f8fcfb 46%, #ddf2f1 100%);
+  border-bottom: 1px solid var(--line);
 }
-.howItWorks {
-   display: flex; 
-  flex-direction: column;
+
+.hero > p:not(.eyebrow) {
+  max-width: 680px;
+  margin: 0 auto 1.25rem;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.hero > h1:first-of-type {
+  margin-bottom: 0.65rem;
+  color: var(--sea-dark);
+  font-size: clamp(1rem, 2.8vw, 1.45rem);
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.eyebrow {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  padding-right: 4rem;
-  padding-left: 4rem;
+  margin: 0 0 1rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgba(8, 127, 140, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--sea-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  margin-top: 0.75rem;
+  padding: 0.9rem 1.25rem;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--sun);
+  box-shadow: 5px 5px 0 var(--ink);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.primaryBtn:hover,
+.primaryBtn:focus-visible {
+  box-shadow: 2px 2px 0 var(--ink);
+  outline: none;
+  transform: translate(3px, 3px);
+}
+
+.eventInfoContainer {
+  display: grid;
+  gap: clamp(1rem, 3vw, 2rem);
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(2.5rem, 7vw, 5rem) 0;
+}
+
+.eventInfo,
+.howItWorks,
 .slots {
-  padding: 1rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 24px rgba(23, 23, 23, 0.06);
+}
 
+.eventInfo p,
+.howItWorks p,
+.slots > p {
+  max-width: 720px;
+  margin-right: auto;
+  margin-left: auto;
+  color: var(--muted);
+}
+
+.eventInfo p {
+  margin-bottom: 0.45rem;
+}
+
+.eventInfo strong {
+  color: var(--ink);
 }
 
 .slotGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.slotGrid--hasSelection {
+  grid-template-columns: minmax(0, 420px);
+  justify-content: center;
 }
 
 .slotCard {
   position: relative;
-  border: 2px solid #111;
-  border-radius: 16px;
-  padding: 1rem;
+  min-height: 12rem;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 1.15rem;
   background: #fff;
+  box-shadow: 4px 4px 0 rgba(23, 23, 23, 0.12);
+  color: var(--ink);
   text-align: left;
   cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.slotCard:hover,
+.slotCard:focus-visible {
+  border-color: var(--sea);
+  box-shadow: 5px 5px 0 rgba(8, 127, 140, 0.22);
+  outline: none;
+  transform: translateY(-2px);
 }
 
 .slotCard--selected {
-  background: #f3fbf7;
-  border-color: #1f8f4d;
-  box-shadow: 0 0 0 3px rgba(31, 143, 77, 0.18);
+  background: var(--grass-soft);
+  border-color: var(--grass);
+  box-shadow: 0 0 0 3px rgba(33, 132, 80, 0.18), var(--shadow);
 }
 
 .slotGrid--hasSelection .slotCard:not(.slotCard--selected) {
@@ -77,13 +230,13 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--grass);
   border-radius: 999px;
   background: #fff;
-  border: 1px solid #1f8f4d;
-  color: #185c32;
-  font-size: 1.2rem;
+  color: var(--grass);
+  font-size: 1.25rem;
   line-height: 0;
 }
 
@@ -93,62 +246,129 @@ p {
 
 .slotCard .slotCardClose:hover,
 .slotCard .slotCardClose:focus-visible {
-  background: #e8f6ee;
+  background: #d8f0e5;
   outline: none;
 }
 
 .slotCard span {
   display: block;
+  margin-top: 0.75rem;
   font-weight: 700;
 }
 
 .slotCard small {
   display: block;
-  margin-top: 0.5rem;
-  opacity: 0.7;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
+
 .bookingSection {
-  background: #f9f9f9;
-  padding: 2rem;
   display: flex;
   justify-content: center;
+  padding: 2rem;
+  background: var(--sand);
 }
 
 .bookingForm {
-  margin-top: 2rem;
   display: grid;
-  gap: 1rem;
-  max-width: 420px;
+  width: min(100%, 480px);
+  margin: 1.25rem auto 0;
+  gap: 0.9rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(23, 23, 23, 0.08);
+}
+
+.bookingForm h3 {
+  margin-bottom: 0.25rem;
+  color: var(--sea-dark);
 }
 
 .bookingForm input,
 .bookingForm select,
 .bookingForm button {
-  padding: 0.9rem;
-  border-radius: 10px;
-  border: 1px solid #ccc;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #c9c4b8;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.bookingForm input:focus,
+.bookingForm select:focus {
+  border-color: var(--sea);
+  box-shadow: 0 0 0 3px rgba(8, 127, 140, 0.16);
+  outline: none;
+}
+
+.bookingForm button {
+  border: 2px solid var(--sea-dark);
+  background: var(--sea);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.bookingForm button:hover,
+.bookingForm button:focus-visible {
+  background: var(--sea-dark);
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .bookingForm button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
+  transform: none;
 }
 
 .bookingFeedback {
   margin: 0;
-  padding: 0.9rem;
-  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
   font-weight: 700;
+  line-height: 1.45;
 }
 
 .bookingFeedback--success {
-  background: #e8f6ee;
+  background: var(--grass-soft);
   border: 1px solid #68b684;
   color: #185c32;
 }
 
 .bookingFeedback--error {
-  background: #fdecec;
-  border: 1px solid #d66a6a;
-  color: #7a1f1f;
+  background: var(--error-bg);
+  border: 1px solid var(--error-line);
+  color: var(--error-text);
+}
+
+@media (max-width: 680px) {
+  .hero {
+    min-height: auto;
+    padding-top: 3rem;
+    padding-bottom: 3.25rem;
+  }
+
+  .eventInfoContainer {
+    width: min(100% - 1rem, 1120px);
+    padding-top: 1rem;
+  }
+
+  .eventInfo,
+  .howItWorks,
+  .slots {
+    padding: 1.1rem;
+  }
+
+  .slotGrid,
+  .slotGrid--hasSelection {
+    grid-template-columns: 1fr;
+  }
 }

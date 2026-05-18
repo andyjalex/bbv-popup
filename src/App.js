@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Hero from './components/Hero';
 import EventInfo from './components/EventInfo';
@@ -10,8 +9,6 @@ function App() {
       <Navbar />
       <Hero /> 
       <EventInfo />
-
-     
     </div>
   );
 }

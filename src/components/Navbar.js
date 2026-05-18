@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { FaBars } from 'react-icons/fa6'
 import logo from '../assets/icon.png'
 
 const Navbar = ({ fixed }) => {

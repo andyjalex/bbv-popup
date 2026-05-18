@@ -1,5 +1,3 @@
-import { seedSlots } from "../services/seedSlots";
-
 const Hero = () => {
   return (
 
@@ -19,7 +17,7 @@ const Hero = () => {
         <a href="#slots" className="primaryBtn">
           Book a time slot
         </a>
-        <button onClick={seedSlots}>Seed Slots</button>
+        {/* <button onClick={seedSlots}>Seed Slots</button> */}
       </section>
 
   );
