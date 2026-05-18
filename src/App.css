@@ -1,38 +1,154 @@
 .App {
   text-align: center;
+  
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1 {
+  font-family: "Graphik";
+  font-weight: 700;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+p {
+  font-family: "Graphik";
+  font-weight: 400;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
+.hero {
+  background-color: #ccc;
+  padding: 2rem;
+} 
+
+.eventInfo {
+  display: flex; 
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 2rem;
+  padding-right: 4rem;
+  padding-left: 4rem;
+
+
+}
+.howItWorks {
+   display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  padding-right: 4rem;
+  padding-left: 4rem;
 }
 
-.App-link {
-  color: #61dafb;
+.slots {
+  padding: 1rem;
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.slotCard {
+  position: relative;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 1rem;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.slotCard--selected {
+  background: #f3fbf7;
+  border-color: #1f8f4d;
+  box-shadow: 0 0 0 3px rgba(31, 143, 77, 0.18);
+}
+
+.slotGrid--hasSelection .slotCard:not(.slotCard--selected) {
+  display: none;
+}
+
+.slotCard .slotCardClose {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #1f8f4d;
+  color: #185c32;
+  font-size: 1.2rem;
+  line-height: 0;
+}
+
+.slotCard .slotCardClose svg {
+  display: block;
+}
+
+.slotCard .slotCardClose:hover,
+.slotCard .slotCardClose:focus-visible {
+  background: #e8f6ee;
+  outline: none;
+}
+
+.slotCard span {
+  display: block;
+  font-weight: 700;
+}
+
+.slotCard small {
+  display: block;
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+.bookingSection {
+  background: #f9f9f9;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.bookingForm {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+  max-width: 420px;
+}
+
+.bookingForm input,
+.bookingForm select,
+.bookingForm button {
+  padding: 0.9rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.bookingForm button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.bookingFeedback {
+  margin: 0;
+  padding: 0.9rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.bookingFeedback--success {
+  background: #e8f6ee;
+  border: 1px solid #68b684;
+  color: #185c32;
+}
+
+.bookingFeedback--error {
+  background: #fdecec;
+  border: 1px solid #d66a6a;
+  color: #7a1f1f;
 }
