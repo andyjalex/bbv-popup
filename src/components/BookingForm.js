@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { BookingConflictError, createBooking } from "../services/bookings";
 
 const getTeamOptions = (slot) => {
-  return ["team1", "team2"]
+    console.log("Calculating team options for slot:", slot);
+  return ["sunrise", "sunset"]
     .filter((teamKey) => slot[teamKey])
     .map((teamKey, index) => ({
       key: teamKey,
-      name: slot[teamKey].name || `Team ${index + 1}`,
+      name: slot[teamKey].name || `Team ${teamKey}`,
       max: Number(slot[teamKey].max ?? 0),
       spaces:
         Number(slot[teamKey].max ?? 0) -
@@ -34,6 +35,8 @@ const BookingForm = ({ selectedSlot }) => {
     setFeedback(null);
     setIsSubmitting(true);
 
+    const trimmedName = name.trim();
+    const trimmedWhatsapp = whatsapp.trim();
     const selectedTeam = teamOptions.find((team) => team.key === teamKey);
 
     if (!selectedTeam) {
@@ -47,8 +50,8 @@ const BookingForm = ({ selectedSlot }) => {
 
     try {
       await createBooking({
-        name,
-        whatsapp,
+        name: trimmedName,
+        whatsapp: trimmedWhatsapp,
         ability,
         teamKey,
         teamName: selectedTeam.name,
@@ -60,7 +63,7 @@ const BookingForm = ({ selectedSlot }) => {
 
       setFeedback({
         type: "success",
-        text: `Thanks ${name}! You're booked for ${selectedSlot.label} with ${selectedTeam.name}. We'll use your WhatsApp number if we need to share any updates.`,
+        text: `Thanks ${trimmedName}! You're booked for ${selectedSlot.label} with ${selectedTeam.name}. We'll use your WhatsApp number if we need to share any updates.`,
       });
       setName("");
       setWhatsapp("");
@@ -86,6 +89,7 @@ const BookingForm = ({ selectedSlot }) => {
   return (
     <section className="bookingSection">
     <form onSubmit={handleSubmit} className="bookingForm">
+
       <h3>{selectedSlot.label}</h3>
 
       <input
@@ -113,6 +117,8 @@ const BookingForm = ({ selectedSlot }) => {
           </option>
         ))}
       </select>
+
+      <h5>Slots may change — we’ll update you on WhatsApp.</h5>
 
       <button type="submit" disabled={isSubmitting || !teamKey}>
         {isSubmitting ? "Booking..." : "Book this slot"}

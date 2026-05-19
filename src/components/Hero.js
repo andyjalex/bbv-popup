@@ -1,12 +1,11 @@
+import { seedSlots } from "../services/seedSlots";
 const Hero = () => {
   return (
 
 
 
       <section className="hero">
-         <h1>Bournemouth Beach Volleyball</h1>
      
-        <p>Welcome to the Bournemouth Beach Volleyball pop-up site!</p>
         <p className="eyebrow">BBVC Charity Event</p>
         <h1>24 hours of beach volleyball by Bournemouth Pier</h1>
         <p>
@@ -14,6 +13,7 @@ const Hero = () => {
           charity. Pick a time slot, bring your energy, and help keep the rally
           going.
         </p>
+        <p className="organiser">Organised by Bournemouth Beach Volleyball Community</p>
         <a href="#slots" className="primaryBtn">
           Book a time slot
         </a>

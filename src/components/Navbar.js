@@ -12,7 +12,9 @@ const Navbar = ({ fixed }) => {
         <div className="nav-header">
           <div className="main-header__brand" to="/">
             <img src={logo} alt="BBV" />
+            <span className="main-header__brand-text">BBV  </span>
           </div>
+          
          
         </div>
       </div>
@@ -60,6 +62,17 @@ const NavWrapper = styled.nav`
     text-decoration: none;
     font-weight: bold;
     vertical-align: middle;
+    align-items: center;
+  }
+  .main-header__brand-text {
+    margin-left: .5rem;
+    color: var(--clr-primary-3);
+    font-size: 1.8rem;
+    text-decoration: none;
+    -webkit-text-stroke: 1px white; 
+    text-transform: uppercase;
+    letter-spacing: var(--spacing);
+    font-weight: 900;
   }
   .main-header__brand img {
     height: 4rem;

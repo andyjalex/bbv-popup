@@ -22,12 +22,14 @@ const generateSlots = () => {
 
       date: slotStart.toISOString(),
 
-      team1: {
+      sunset: {
+        name: "Team Sunset",
         max: 2,
         players: []
       },
 
-      team2: {
+      sunrise: {
+        name: "Team Sunrise",
         max: 2,
         players: []
       },

@@ -3,6 +3,25 @@ import { IoClose } from "react-icons/io5";
 import BookingForm from "./BookingForm";
 import { subscribeToSlots } from "../services/slots";
 
+const getSlotPeriod = (slot) => {
+  if (slot.period === "night" || slot.dayPeriod === "night") {
+    return "night";
+  }
+
+  if (slot.period === "day" || slot.dayPeriod === "day") {
+    return "day";
+  }
+
+  const hourMatch = String(slot.label || "").match(/\b([01]?\d|2[0-3]):\d{2}\b/);
+  const hour = hourMatch ? Number(hourMatch[1]) : null;
+
+  if (hour !== null && (hour < 7 || hour >= 20)) {
+    return "night";
+  }
+
+  return "day";
+};
+
 const SlotBooking = ({ slots }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
 
@@ -17,17 +36,18 @@ const SlotBooking = ({ slots }) => {
         }`}
       >
         {[...slots].sort((a, b) => Number(a.order ?? a.id) - Number(b.order ?? b.id)).map((slot) => {
-          const team1Spaces =
-            Number(slot.team1?.max ?? 0) -
-            (Array.isArray(slot.team1?.players) ? slot.team1.players.length : 0);
-          const team2Spaces =
-            Number(slot.team2?.max ?? 0) -
-            (Array.isArray(slot.team2?.players) ? slot.team2.players.length : 0);
+          const slotPeriod = getSlotPeriod(slot);
+          const teamSunsetSpaces =
+            Number(slot.sunset?.max ?? 0) -
+            (Array.isArray(slot.sunset?.players) ? slot.sunset.players.length : 0);
+          const teamSunriseSpaces =
+            Number(slot.sunrise?.max ?? 0) -
+            (Array.isArray(slot.sunrise?.players) ? slot.sunrise.players.length : 0);
 
           return (
             <button
               key={slot.id}
-              className={`slotCard${
+              className={`slotCard slotCard--${slotPeriod}${
                 selectedSlot?.id === slot.id ? " slotCard--selected" : ""
               }`}
               onClick={() => setSelectedSlot(slot)}
@@ -54,13 +74,31 @@ const SlotBooking = ({ slots }) => {
                 </span>
               )}
               <h3>{slot.label}</h3>
-              <span>{slot.team1?.name || "Team 1"}</span>
+              <span>{slot.sunset?.name || "Team 1"}</span>
               <small>
-                {Math.max(team1Spaces, 0)} of {slot.team1?.max ?? 0} spaces left
+                {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0} spaces left
+                {slot.sunset?.players?.length > 0 && (
+                  <ul className="playerList">
+                    {slot.sunset.players.map((player) => (
+                      <div className="playerItem" key={player.bookingId}>
+                        {player.ability}
+                      </div>
+                    ))}
+                  </ul>
+                )}
               </small>
-              <span>{slot.team2?.name || "Team 2"}</span>
+              <span>{slot.sunrise?.name || "Team 2"}</span>
               <small>
-                {Math.max(team2Spaces, 0)} of {slot.team2?.max ?? 0} spaces left
+                {Math.max(teamSunriseSpaces, 0)} of {slot.sunrise?.max ?? 0} spaces left
+                {slot.sunrise?.players?.length > 0 && (
+                  <ul className="playerList">
+                    {slot.sunrise.players.map((player) => (
+                      <div className="playerItem" key={player.bookingId}>
+                        {player.ability}
+                      </div>
+                    ))}
+                  </ul>
+                )}
               </small>
             </button>
           );
