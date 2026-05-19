@@ -104,6 +104,24 @@ p {
   line-height: 1.2;
   text-transform: uppercase;
 }
+.hero .instaLink {
+
+  align-items: center;
+  color: var(--sea);
+  font-size: 1.15rem;
+  margin-top: 1rem;
+  gap: 0.5rem;
+
+
+}
+.hero .instaLink a {
+  display: flex;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 700;
+  gap: 0.5rem;
+  align-items: center;
+}
 
 .eyebrow {
   display: inline-flex;
