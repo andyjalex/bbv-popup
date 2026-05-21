@@ -12,7 +12,7 @@ const Navbar = ({ fixed }) => {
         <div className="nav-header">
           <div className="main-header__brand" to="/">
             <img src={logo} alt="BBV" />
-            <span className="main-header__brand-text">BBV  </span>
+            <span className="main-header__brand-text">BBVC  </span>
           </div>
           
          

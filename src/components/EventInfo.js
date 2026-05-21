@@ -12,7 +12,9 @@ const getSlotPeriod = (slot) => {
     return "day";
   }
 
-  const hourMatch = String(slot.label || "").match(/\b([01]?\d|2[0-3]):\d{2}\b/);
+  const hourMatch = String(slot.label || "").match(
+    /\b([01]?\d|2[0-3]):\d{2}\b/,
+  );
   const hour = hourMatch ? Number(hourMatch[1]) : null;
 
   if (hour !== null && (hour < 7 || hour >= 20)) {
@@ -21,6 +23,19 @@ const getSlotPeriod = (slot) => {
 
   return "day";
 };
+
+const convertLevel = (level) => {
+  switch (level) {
+    case "Beginner":
+      return "Bgn";
+    case "Intermediate":
+      return "Int";
+    case "advanced":
+      return "Adv";
+    default:
+      return level;
+  }
+}
 
 const SlotBooking = ({ slots }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -31,78 +46,95 @@ const SlotBooking = ({ slots }) => {
       <p>Choose a time you can play and we'll add you to the schedule.</p>
 
       <div
-        className={`slotGrid${
-          selectedSlot ? " slotGrid--hasSelection" : ""
-        }`}
+        className={`slotGrid${selectedSlot ? " slotGrid--hasSelection" : ""}`}
       >
-        {[...slots].sort((a, b) => Number(a.order ?? a.id) - Number(b.order ?? b.id)).map((slot) => {
-          const slotPeriod = getSlotPeriod(slot);
-          const teamSunsetSpaces =
-            Number(slot.sunset?.max ?? 0) -
-            (Array.isArray(slot.sunset?.players) ? slot.sunset.players.length : 0);
-          const teamSunriseSpaces =
-            Number(slot.sunrise?.max ?? 0) -
-            (Array.isArray(slot.sunrise?.players) ? slot.sunrise.players.length : 0);
+        {[...slots]
+          .sort((a, b) => Number(a.order ?? a.id) - Number(b.order ?? b.id))
+          .map((slot) => {
+            const slotPeriod = getSlotPeriod(slot);
+            const teamSunsetSpaces =
+              Number(slot.sunset?.max ?? 0) -
+              (Array.isArray(slot.sunset?.players)
+                ? slot.sunset.players.length
+                : 0);
+            const teamSunriseSpaces =
+              Number(slot.sunrise?.max ?? 0) -
+              (Array.isArray(slot.sunrise?.players)
+                ? slot.sunrise.players.length
+                : 0);
 
-          return (
-            <button
-              key={slot.id}
-              className={`slotCard slotCard--${slotPeriod}${
-                selectedSlot?.id === slot.id ? " slotCard--selected" : ""
-              }`}
-              onClick={() => setSelectedSlot(slot)}
-            >
-              {selectedSlot?.id === slot.id && (
-                <span
-                  className="slotCardClose"
-                  aria-label="Show all slots"
-                  role="button"
-                  tabIndex="0"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    setSelectedSlot(null);
-                  }}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
+            console.log(teamSunriseSpaces, teamSunsetSpaces);
+
+            return (
+              <button
+                key={slot.id}
+                className={`slotCard slotCard--${slotPeriod}${
+                  selectedSlot?.id === slot.id ? " slotCard--selected" : ""
+                }`}
+                onClick={() => setSelectedSlot(slot)}
+              >
+                {selectedSlot?.id === slot.id && (
+                  <span
+                    className="slotCardClose"
+                    aria-label="Show all slots"
+                    role="button"
+                    tabIndex="0"
+                    onClick={(event) => {
                       event.stopPropagation();
                       setSelectedSlot(null);
-                    }
-                  }}
-                >
-                  <IoClose aria-hidden="true" />
-                </span>
-              )}
-              <h3>{slot.label}</h3>
-              <span>{slot.sunset?.name || "Team 1"}</span>
-              <small>
-                {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0} spaces left
-                {slot.sunset?.players?.length > 0 && (
-                  <ul className="playerList">
-                    {slot.sunset.players.map((player) => (
-                      <div className="playerItem" key={player.bookingId}>
-                        {player.ability}
-                      </div>
-                    ))}
-                  </ul>
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setSelectedSlot(null);
+                      }
+                    }}
+                  >
+                    <IoClose aria-hidden="true" />
+                  </span>
                 )}
-              </small>
-              <span>{slot.sunrise?.name || "Team 2"}</span>
-              <small>
-                {Math.max(teamSunriseSpaces, 0)} of {slot.sunrise?.max ?? 0} spaces left
-                {slot.sunrise?.players?.length > 0 && (
-                  <ul className="playerList">
-                    {slot.sunrise.players.map((player) => (
-                      <div className="playerItem" key={player.bookingId}>
-                        {player.ability}
-                      </div>
-                    ))}
-                  </ul>
-                )}
-              </small>
-            </button>
-          );
-        })}
+                <h3>{slot.label}</h3>
+                <span>{slot.sunset?.name || "Team 1"}</span>
+                <small>
+                    <div className="teamStatus">
+                        
+                  {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0}{" "}
+                  spaces left
+                    {teamSunsetSpaces === 0 ? <span style={{ color: "red", marginTop: 0, borderColor: "red", borderWidth: "1px", borderStyle: "solid", padding: "0.25rem", borderRadius: "4px" }}>Full</span> : ""} 
+                    </div>
+                  {slot.sunset?.players?.length > 0 && (
+                    <ul className="playerList">
+                        <p className="playerList__title">Who is playing{teamSunsetSpaces === 0 ? "s" : ""}</p>
+                      {slot.sunset.players.map((player) => (
+                        <div className="playerItem" key={player.bookingId}>
+                          {!selectedSlot ? convertLevel(player.ability) : player.ability}
+                        </div>
+                      ))}
+                    </ul>
+                  )}
+                </small>
+                <span>{slot.sunrise?.name || "Team 2"}</span>
+                <small>
+                  <div className="teamStatus">
+                    {Math.max(teamSunriseSpaces, 0)} of {slot.sunrise?.max ?? 0}{" "}
+                    spaces left
+                    {teamSunriseSpaces === 0 ? <span style={{ color: "red", marginTop: 0, borderColor: "red", borderWidth: "1px", borderStyle: "solid", padding: "0.25rem", borderRadius: "4px" }}>Full</span> : ""}
+                  </div>
+                  {slot.sunrise?.players?.length > 0 && (
+                    <ul className="playerList">
+                        <p className="playerList__title">Who is playing{teamSunriseSpaces === 0 ? "s" : ""}</p>
+                      {slot.sunrise.players.map((player) => (
+                        <div className="playerItem" key={player.bookingId}>
+                          {!selectedSlot ? convertLevel(player.ability) : player.ability}
+                        </div>
+                      ))}
+                    </ul>
+                  )}
+                </small>
+              </button>
+            );
+          })}
       </div>
 
       {selectedSlot && <BookingForm selectedSlot={selectedSlot} />}
@@ -125,7 +157,7 @@ const EventInfo = () => {
       () => {
         setSlotError("Sorry, we could not load the slots. Please try again.");
         setLoading(false);
-      }
+      },
     );
 
     return unsubscribe;
