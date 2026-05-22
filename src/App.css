@@ -398,6 +398,18 @@ p {
   color: var(--sea-dark);
 }
 
+.bookingForm label {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--ink);
+  font-weight: 700;
+  text-align: left;
+}
+
+.bookingForm label span {
+  font-size: 0.9rem;
+}
+
 .bookingForm input,
 .bookingForm select,
 .bookingForm button {
@@ -460,6 +472,12 @@ p {
   background: var(--error-bg);
   border: 1px solid var(--error-line);
   color: var(--error-text);
+}
+
+.bookingFeedback--warning {
+  background: #fff6d8;
+  border: 1px solid #d9a620;
+  color: #644900;
 }
 
 @media (max-width: 680px) {

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookingConflictError, createBooking } from "../services/bookings";
+import { ConfirmationEmailError, sendBookingConfirmation } from "../services/email";
 
 const getTeamOptions = (slot) => {
     console.log("Calculating team options for slot:", slot);
@@ -18,6 +19,7 @@ const getTeamOptions = (slot) => {
 const BookingForm = ({ selectedSlot }) => {
   const teamOptions = useMemo(() => getTeamOptions(selectedSlot), [selectedSlot]);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [ability, setAbility] = useState("Beginner");
   const [teamKey, setTeamKey] = useState(teamOptions[0]?.key || "");
@@ -36,6 +38,7 @@ const BookingForm = ({ selectedSlot }) => {
     setIsSubmitting(true);
 
     const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
     const trimmedWhatsapp = whatsapp.trim();
     const selectedTeam = teamOptions.find((team) => team.key === teamKey);
 
@@ -51,6 +54,7 @@ const BookingForm = ({ selectedSlot }) => {
     try {
       await createBooking({
         name: trimmedName,
+        email: trimmedEmail,
         whatsapp: trimmedWhatsapp,
         ability,
         teamKey,
@@ -61,11 +65,33 @@ const BookingForm = ({ selectedSlot }) => {
         status: "booked",
       });
 
-      setFeedback({
-        type: "success",
-        text: `Thanks ${trimmedName}! You're booked for ${selectedSlot.label} with ${selectedTeam.name}. We'll use your WhatsApp number if we need to share any updates.`,
-      });
+      try {
+        await sendBookingConfirmation({
+          name: trimmedName,
+          email: trimmedEmail,
+          whatsapp: trimmedWhatsapp,
+          ability,
+          teamName: selectedTeam.name,
+          slotLabel: selectedSlot.label,
+        });
+
+        setFeedback({
+          type: "success",
+          text: `Thanks ${trimmedName}! You're booked for ${selectedSlot.label} with ${selectedTeam.name}. A confirmation email is on its way.`,
+        });
+      } catch (emailError) {
+        if (!(emailError instanceof ConfirmationEmailError)) {
+          throw emailError;
+        }
+
+        setFeedback({
+          type: "warning",
+          text: `Thanks ${trimmedName}! You're booked for ${selectedSlot.label} with ${selectedTeam.name}, but we could not send the confirmation email.`,
+        });
+      }
+
       setName("");
+      setEmail("");
       setWhatsapp("");
       setAbility("Beginner");
       setTeamKey(teamOptions[0]?.key || "");
@@ -78,7 +104,7 @@ const BookingForm = ({ selectedSlot }) => {
       } else {
         setFeedback({
           type: "error",
-          text: "Sorry, we could not send your booking request. Please try again.",
+          text: "Sorry, we could not complete your booking request. Please try again.",
         });
       }
     } finally {
@@ -92,31 +118,57 @@ const BookingForm = ({ selectedSlot }) => {
 
       <h3>{selectedSlot.label}</h3>
 
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Your name"
-        required
-      />
+      <label>
+        <span>Your name</span>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          autoComplete="name"
+          required
+        />
+      </label>
 
-      <input
-        value={whatsapp}
-        onChange={(e) => setWhatsapp(e.target.value)}
-        placeholder="WhatsApp number"
-        required
-      />
-      <select value={ability} onChange={(e) => setAbility(e.target.value)}>
+      <label>
+        <span>Email address</span>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email address"
+          autoComplete="email"
+          required
+        />
+      </label>
+
+      <label>
+        <span>WhatsApp number</span>
+        <input
+          value={whatsapp}
+          onChange={(e) => setWhatsapp(e.target.value)}
+          placeholder="WhatsApp number"
+          autoComplete="tel"
+          required
+        />
+      </label>
+      <label>
+        <span>Ability</span>
+        <select value={ability} onChange={(e) => setAbility(e.target.value)}>
         <option>Beginner</option>
         <option>Intermediate</option>
         <option>Advanced</option>
       </select>
-      <select value={teamKey} onChange={(e) => setTeamKey(e.target.value)}>
+      </label>
+      <label>
+        <span>Team</span>
+        <select value={teamKey} onChange={(e) => setTeamKey(e.target.value)}>
         {teamOptions.map((team) => (
           <option key={team.key} value={team.key} disabled={team.spaces <= 0}>
             {team.name} - {team.spaces} of {team.max} spaces left
           </option>
         ))}
       </select>
+      </label>
 
       <h5>Slots may change — we’ll update you on WhatsApp.</h5>
 
