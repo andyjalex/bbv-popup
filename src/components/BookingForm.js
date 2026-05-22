@@ -170,7 +170,15 @@ const BookingForm = ({ selectedSlot }) => {
       </select>
       </label>
 
-      <h5>Slots may change — we’ll update you on WhatsApp.</h5>
+      <div className="bookingTerms">
+        <p>Slots may change — we’ll update you on WhatsApp.</p>
+        <p>
+          By booking, you agree that event photography and video may be used by
+          BBVC for social media, promotion, and event coverage. All event
+          photography and video belongs to BBVC.
+        </p>
+        <p>You must be 18 or over to book and take part.</p>
+      </div>
 
       <button type="submit" disabled={isSubmitting || !teamKey}>
         {isSubmitting ? "Booking..." : "Book this slot"}
