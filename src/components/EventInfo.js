@@ -171,7 +171,7 @@ const EventInfo = () => {
           <strong>Date:</strong> 22–23 August 2026
         </p>
         <p>
-          <strong>Location:</strong> Bournemouth Pier beach
+          <strong>Location:</strong> Bournemouth beach (near Harry Ramsden's)
         </p>
         <p>
           <strong>Format:</strong> 24 hours of continuous beach volleyball

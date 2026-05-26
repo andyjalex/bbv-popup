@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { BookingConflictError, createBooking } from "../services/bookings";
-import { ConfirmationEmailError, sendBookingConfirmation } from "../services/email";
+import {
+  ConfirmationEmailError,
+  sendBookingConfirmation,
+} from "../services/email";
 
 const getTeamOptions = (slot) => {
-    console.log("Calculating team options for slot:", slot);
+  console.log("Calculating team options for slot:", slot);
   return ["sunrise", "sunset"]
     .filter((teamKey) => slot[teamKey])
     .map((teamKey, index) => ({
@@ -12,12 +15,17 @@ const getTeamOptions = (slot) => {
       max: Number(slot[teamKey].max ?? 0),
       spaces:
         Number(slot[teamKey].max ?? 0) -
-        (Array.isArray(slot[teamKey].players) ? slot[teamKey].players.length : 0),
+        (Array.isArray(slot[teamKey].players)
+          ? slot[teamKey].players.length
+          : 0),
     }));
 };
 
 const BookingForm = ({ selectedSlot }) => {
-  const teamOptions = useMemo(() => getTeamOptions(selectedSlot), [selectedSlot]);
+  const teamOptions = useMemo(
+    () => getTeamOptions(selectedSlot),
+    [selectedSlot],
+  );
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -114,84 +122,88 @@ const BookingForm = ({ selectedSlot }) => {
 
   return (
     <section className="bookingSection">
-    <form onSubmit={handleSubmit} className="bookingForm">
+      <form onSubmit={handleSubmit} className="bookingForm">
+        <h3>{selectedSlot.label}</h3>
 
-      <h3>{selectedSlot.label}</h3>
+        <label>
+          <span>Your name</span>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            autoComplete="name"
+            required
+          />
+        </label>
 
-      <label>
-        <span>Your name</span>
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Your name"
-          autoComplete="name"
-          required
-        />
-      </label>
+        <label>
+          <span>Email address</span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email address"
+            autoComplete="email"
+            required
+          />
+        </label>
 
-      <label>
-        <span>Email address</span>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email address"
-          autoComplete="email"
-          required
-        />
-      </label>
+        <label>
+          <span>WhatsApp number</span>
+          <input
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            placeholder="WhatsApp number"
+            autoComplete="tel"
+            required
+          />
+        </label>
+        <label>
+          <span>Ability</span>
+          <select value={ability} onChange={(e) => setAbility(e.target.value)}>
+            <option>Beginner</option>
+            <option>Improver</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+          </select>
+        </label>
+        <label>
+          <span>Team</span>
+          <select value={teamKey} onChange={(e) => setTeamKey(e.target.value)}>
+            {teamOptions.map((team) => (
+              <option
+                key={team.key}
+                value={team.key}
+                disabled={team.spaces <= 0}
+              >
+                {team.name} - {team.spaces} of {team.max} spaces left
+              </option>
+            ))}
+          </select>
+        </label>
 
-      <label>
-        <span>WhatsApp number</span>
-        <input
-          value={whatsapp}
-          onChange={(e) => setWhatsapp(e.target.value)}
-          placeholder="WhatsApp number"
-          autoComplete="tel"
-          required
-        />
-      </label>
-      <label>
-        <span>Ability</span>
-        <select value={ability} onChange={(e) => setAbility(e.target.value)}>
-        <option>Beginner</option>
-        <option>Intermediate</option>
-        <option>Advanced</option>
-      </select>
-      </label>
-      <label>
-        <span>Team</span>
-        <select value={teamKey} onChange={(e) => setTeamKey(e.target.value)}>
-        {teamOptions.map((team) => (
-          <option key={team.key} value={team.key} disabled={team.spaces <= 0}>
-            {team.name} - {team.spaces} of {team.max} spaces left
-          </option>
-        ))}
-      </select>
-      </label>
+        <div className="bookingTerms">
+          <p>Slots may change — we’ll update you on WhatsApp.</p>
+          <p>
+            By booking, you agree that event photography and video may be used
+            by BBVC for social media, promotion, and event coverage. All event
+            photography and video belongs to BBVC.
+          </p>
+          <p>You must be 18 or over to book and take part.</p>
+        </div>
 
-      <div className="bookingTerms">
-        <p>Slots may change — we’ll update you on WhatsApp.</p>
-        <p>
-          By booking, you agree that event photography and video may be used by
-          BBVC for social media, promotion, and event coverage. All event
-          photography and video belongs to BBVC.
-        </p>
-        <p>You must be 18 or over to book and take part.</p>
-      </div>
+        <button type="submit" disabled={isSubmitting || !teamKey}>
+          {isSubmitting ? "Booking..." : "Book this slot"}
+        </button>
 
-      <button type="submit" disabled={isSubmitting || !teamKey}>
-        {isSubmitting ? "Booking..." : "Book this slot"}
-      </button>
-
-      {feedback && (
-        <p className={`bookingFeedback bookingFeedback--${feedback.type}`}>
-          {feedback.text}
-        </p>
-      )}
-    </form>
+        {feedback && (
+          <p className={`bookingFeedback bookingFeedback--${feedback.type}`}>
+            {feedback.text}
+          </p>
+        )}
+      </form>
     </section>
   );
-}
+};
 
 export default BookingForm;

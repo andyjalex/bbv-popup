@@ -6,7 +6,7 @@ const Hero = () => {
       <p className="eyebrow">BBVC Charity Event</p>
       <h1>24 hours of beach volleyball by Bournemouth Pier</h1>
       <p>
-        We’re playing non-stop from 22–23 August 2026 to raise money for
+        We’re playing non-stop from 22nd–23rd of August 2026 to raise money for
         charity. Pick a time slot, bring your energy, and help keep the rally
         going.
       </p>
