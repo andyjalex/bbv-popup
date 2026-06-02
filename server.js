@@ -89,6 +89,10 @@ const buildConfirmationEmail = (booking) => {
 };
 
 app.post("/api/send-confirmation", async (req, res) => {
+
+   console.log("Hit /api/send-confirmation");
+  console.log("SMTP_USER exists:", !!process.env.SMTP_USER);
+  console.log("SMTP_PASS exists:", !!process.env.SMTP_PASS);
   const booking = req.body || {};
   const missingField = requiredBookingFields.find((field) => !booking[field]);
 
@@ -98,11 +102,18 @@ app.post("/api/send-confirmation", async (req, res) => {
     });
   }
 
-  if (!hasEmailConfig()) {
-    return res.status(500).json({
-      error: "Email service is not configured.",
-    });
-  }
+if (!hasEmailConfig()) {
+  console.error("Email config missing", {
+    SMTP_USER: !!process.env.SMTP_USER,
+    SMTP_PASS: !!process.env.SMTP_PASS,
+    MAIL_FROM: !!process.env.MAIL_FROM,
+    MAIL_REPLY_TO: !!process.env.MAIL_REPLY_TO,
+  });
+
+  return res.status(500).json({
+    error: "Email service is not configured.",
+  });
+}
 
   try {
     const transporter = createTransporter();
