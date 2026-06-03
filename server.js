@@ -19,20 +19,20 @@ const requiredBookingFields = [
 const hasEmailConfig = () => {
   return Boolean(
     process.env.SMTP_HOST &&
-      process.env.SMTP_PORT &&
-      process.env.SMTP_USER &&
-      process.env.SMTP_PASS &&
-      process.env.MAIL_FROM,
+    process.env.SMTP_PORT &&
+    process.env.SMTP_USER &&
+    process.env.SMTP_PASS &&
+    process.env.MAIL_FROM,
   );
 };
 
 const createTransporter = () => {
-
+  console.log("Using service gmail transporter");
   console.log({
-  SMTP_HOST: process.env.SMTP_HOST,
-  SMTP_PORT: process.env.SMTP_PORT,
-  SMTP_SECURE: process.env.SMTP_SECURE,
-});
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_SECURE: process.env.SMTP_SECURE,
+  });
   return nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -93,8 +93,7 @@ const buildConfirmationEmail = (booking) => {
 };
 
 app.post("/api/send-confirmation", async (req, res) => {
-
-   console.log("Hit /api/send-confirmation");
+  console.log("Hit /api/send-confirmation");
   console.log("SMTP_USER exists:", !!process.env.SMTP_USER);
   console.log("SMTP_PASS exists:", !!process.env.SMTP_PASS);
   const booking = req.body || {};
@@ -106,28 +105,33 @@ app.post("/api/send-confirmation", async (req, res) => {
     });
   }
 
-if (!hasEmailConfig()) {
-  console.error("Email config missing", {
-    SMTP_USER: !!process.env.SMTP_USER,
-    SMTP_PASS: !!process.env.SMTP_PASS,
-    MAIL_FROM: !!process.env.MAIL_FROM,
-    MAIL_REPLY_TO: !!process.env.MAIL_REPLY_TO,
-  });
+  if (!hasEmailConfig()) {
+    console.error("Email config missing", {
+      SMTP_USER: !!process.env.SMTP_USER,
+      SMTP_PASS: !!process.env.SMTP_PASS,
+      MAIL_FROM: !!process.env.MAIL_FROM,
+      MAIL_REPLY_TO: !!process.env.MAIL_REPLY_TO,
+    });
 
-  return res.status(500).json({
-    error: "Email service is not configured.",
-  });
-}
+    return res.status(500).json({
+      error: "Email service is not configured.",
+    });
+  }
 
   try {
     const transporter = createTransporter();
     const confirmationEmail = buildConfirmationEmail(booking);
 
     await transporter.sendMail({
-      from: process.env.MAIL_FROM,
-      to: booking.email,
-      replyTo: process.env.MAIL_REPLY_TO || process.env.MAIL_FROM,
-      ...confirmationEmail,
+      // from: process.env.MAIL_FROM,
+      // to: booking.email,
+      // replyTo: process.env.MAIL_REPLY_TO || process.env.MAIL_FROM,
+      // ...confirmationEmail,
+
+      from: process.env.SMTP_USER,
+      to: process.env.SMTP_USER,
+      subject: "BBVC test email",
+      text: "Testing Gmail from Render",
     });
 
     return res.json({ ok: true });
