@@ -69,3 +69,22 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 # bbv-popup
+
+## Email configuration
+
+The server sends booking confirmations from `/api/send-confirmation` with
+Nodemailer. Set these environment variables in production:
+
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE` (`true` for implicit TLS, usually port `465`; `false` for
+  STARTTLS ports such as `587` or `2525`)
+- `SMTP_USER`
+- `SMTP_PASS`
+- `MAIL_FROM`
+- `MAIL_REPLY_TO` (optional)
+
+Render free web services block outbound SMTP traffic on ports `25`, `465`, and
+`587`. Gmail SMTP uses those ports, so it will time out on Render's free tier.
+Use a paid Render instance, an email provider that supports SMTP on an allowed
+port such as `2525`, or an HTTPS email API instead.

@@ -27,19 +27,26 @@ const hasEmailConfig = () => {
 };
 
 const createTransporter = () => {
-  console.log("Using service gmail transporter");
+  const port = Number(process.env.SMTP_PORT);
+  const secure =
+    String(process.env.SMTP_SECURE).toLowerCase() === "true" || port === 465;
+
+  console.log("Using SMTP transporter");
   console.log({
     SMTP_HOST: process.env.SMTP_HOST,
-    SMTP_PORT: process.env.SMTP_PORT,
-    SMTP_SECURE: process.env.SMTP_SECURE,
+    SMTP_PORT: port,
+    SMTP_SECURE: secure,
   });
+
   return nodemailer.createTransport({
-    service: "gmail",
+    host: process.env.SMTP_HOST,
+    port,
+    secure,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
-     connectionTimeout: 10000,
+    connectionTimeout: 10000,
     greetingTimeout: 10000,
     socketTimeout: 10000,
   });
@@ -124,17 +131,12 @@ app.post("/api/send-confirmation", async (req, res) => {
   try {
     const transporter = createTransporter();
     const confirmationEmail = buildConfirmationEmail(booking);
-console.log("About to send email");
+    console.log("About to send email");
     await transporter.sendMail({
-      // from: process.env.MAIL_FROM,
-      // to: booking.email,
-      // replyTo: process.env.MAIL_REPLY_TO || process.env.MAIL_FROM,
-      // ...confirmationEmail,
-
-      from: process.env.SMTP_USER,
-      to: process.env.SMTP_USER,
-      subject: "BBVC test email",
-      text: "Testing Gmail from Render",
+      from: process.env.MAIL_FROM,
+      to: booking.email,
+      replyTo: process.env.MAIL_REPLY_TO || process.env.MAIL_FROM,
+      ...confirmationEmail,
     });
     console.log("Email sent");
 
