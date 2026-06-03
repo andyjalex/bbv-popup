@@ -121,7 +121,7 @@ app.post("/api/send-confirmation", async (req, res) => {
   try {
     const transporter = createTransporter();
     const confirmationEmail = buildConfirmationEmail(booking);
-
+console.log("About to send email");
     await transporter.sendMail({
       // from: process.env.MAIL_FROM,
       // to: booking.email,
@@ -133,6 +133,7 @@ app.post("/api/send-confirmation", async (req, res) => {
       subject: "BBVC test email",
       text: "Testing Gmail from Render",
     });
+    console.log("Email sent");
 
     return res.json({ ok: true });
   } catch (error) {
