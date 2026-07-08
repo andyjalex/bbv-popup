@@ -185,7 +185,7 @@ const SlotBooking = ({ slots }) => {
                       ))}
                     </ul>
                   )}
-                </small> </>: <p>Please contact us on IG to enter your childen</p>}
+                </small> </>: <p>Please contact us on IG to enter your children</p>}
               </button>
             );
           })}
