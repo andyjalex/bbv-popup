@@ -252,6 +252,14 @@ p {
   color: #fffdf8;
 }
 
+.childrens {
+  border: solid black 4px;
+}
+
+.childrens-text {
+  color: rgb(164, 27, 205)
+}
+
 .slotCard--night h3,
 .slotCard--night span {
   color: #fffdf8;

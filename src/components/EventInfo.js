@@ -35,10 +35,18 @@ const convertLevel = (level) => {
     default:
       return level;
   }
-}
+};
 
 const SlotBooking = ({ slots }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
+
+  const handleSelectSlot = (slot) => {
+    console.log("handle click ", slot);
+
+    if (slot.label === "Sat 22 Aug, 15:00–16:00") return;
+
+    setSelectedSlot(slot);
+  };
 
   return (
     <>
@@ -63,15 +71,17 @@ const SlotBooking = ({ slots }) => {
                 ? slot.sunrise.players.length
                 : 0);
 
-            console.log(teamSunriseSpaces, teamSunsetSpaces);
-
             return (
               <button
                 key={slot.id}
                 className={`slotCard slotCard--${slotPeriod}${
                   selectedSlot?.id === slot.id ? " slotCard--selected" : ""
+                }${
+                  slot?.id === "ijnUNfhyB6wQbEBxwjUr" ? " childrens" : ""
                 }`}
-                onClick={() => setSelectedSlot(slot)}
+
+                //onClick={() => setSelectedSlot(slot)}
+                onClick={() => handleSelectSlot(slot)}
               >
                 {selectedSlot?.id === slot.id && (
                   <span
@@ -94,21 +104,44 @@ const SlotBooking = ({ slots }) => {
                     <IoClose aria-hidden="true" />
                   </span>
                 )}
+                {slot?.id === "ijnUNfhyB6wQbEBxwjUr"? <h3 className="childrens-text">Children's Hour</h3> : ""}
                 <h3>{slot.label}</h3>
+                
+                {slot?.id != "ijnUNfhyB6wQbEBxwjUr"? 
+                <>
                 <span>{slot.sunset?.name || "Team 1"}</span>
                 <small>
-                    <div className="teamStatus">
-                        
-                  {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0}{" "}
-                  spaces left
-                    {teamSunsetSpaces === 0 ? <span style={{ color: "red", marginTop: 0, borderColor: "red", borderWidth: "1px", borderStyle: "solid", padding: "0.25rem", borderRadius: "4px" }}>Full</span> : ""} 
-                    </div>
+                  <div className="teamStatus">
+                    {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0}{" "}
+                    spaces left
+                    {teamSunsetSpaces === 0 ? (
+                      <span
+                        style={{
+                          color: "red",
+                          marginTop: 0,
+                          borderColor: "red",
+                          borderWidth: "1px",
+                          borderStyle: "solid",
+                          padding: "0.25rem",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        Full
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                   {slot.sunset?.players?.length > 0 && (
                     <ul className="playerList">
-                        <p className="playerList__title">Who is playing{teamSunsetSpaces === 0 ? "s" : ""}</p>
+                      <p className="playerList__title">
+                        Who is playing
+                      </p>
                       {slot.sunset.players.map((player) => (
                         <div className="playerItem" key={player.bookingId}>
-                          {!selectedSlot ? convertLevel(player.ability) : player.ability}
+                          {!selectedSlot
+                            ? convertLevel(player.ability)
+                            : player.name}
                         </div>
                       ))}
                     </ul>
@@ -119,19 +152,40 @@ const SlotBooking = ({ slots }) => {
                   <div className="teamStatus">
                     {Math.max(teamSunriseSpaces, 0)} of {slot.sunrise?.max ?? 0}{" "}
                     spaces left
-                    {teamSunriseSpaces === 0 ? <span style={{ color: "red", marginTop: 0, borderColor: "red", borderWidth: "1px", borderStyle: "solid", padding: "0.25rem", borderRadius: "4px" }}>Full</span> : ""}
+                    {teamSunriseSpaces === 0 ? (
+                      <span
+                        style={{
+                          color: "red",
+                          marginTop: 0,
+                          borderColor: "red",
+                          borderWidth: "1px",
+                          borderStyle: "solid",
+                          padding: "0.25rem",
+                          borderRadius: "4px",
+                        }}
+                      >
+                        Full
+                      </span>
+                      
+                    ) : (
+                      ""
+                    )}
                   </div>
                   {slot.sunrise?.players?.length > 0 && (
                     <ul className="playerList">
-                        <p className="playerList__title">Who is playing{teamSunriseSpaces === 0 ? "s" : ""}</p>
+                      <p className="playerList__title">
+                        Who is playing
+                      </p>
                       {slot.sunrise.players.map((player) => (
                         <div className="playerItem" key={player.bookingId}>
-                          {!selectedSlot ? convertLevel(player.ability) : player.ability}
+                          {!selectedSlot
+                            ? convertLevel(player.ability)
+                            : player.name}
                         </div>
                       ))}
                     </ul>
                   )}
-                </small>
+                </small> </>: <p>Please contact us on IG to enter your childen</p>}
               </button>
             );
           })}

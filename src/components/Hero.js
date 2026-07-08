@@ -7,9 +7,10 @@ const Hero = () => {
       <h1>24 hours of beach volleyball by Bournemouth Pier</h1>
       <p>
         We’re playing non-stop from 22nd–23rd of August 2026 to raise money for
-        charity. Pick a time slot, bring your energy, and help keep the rally
+        the Steve Bernard Foundation. Pick a time slot, bring your energy, and help keep the rally
         going.
       </p>
+      <p>Donate on our<a href="https://www.justgiving.com/page/sbf-bbv"> Just giving page </a></p>
       <p className="organiser">
         Organised by Bournemouth Beach Volleyball Community
       </p>
