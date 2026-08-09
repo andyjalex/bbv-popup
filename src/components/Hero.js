@@ -1,4 +1,6 @@
 import { seedSlots } from "../services/seedSlots";
+import { exportFirestore } from "../services/getData"; // adjust path
+
 import insta from "../assets/Insta.png";
 const Hero = () => {
   return (
@@ -7,17 +9,19 @@ const Hero = () => {
       <h1>24 hours of beach volleyball by Bournemouth Pier</h1>
       <p>
         We’re playing non-stop from 22nd–23rd of August 2026 to raise money for
-        the Steve Bernard Foundation. Pick a time slot, bring your energy, and help keep the rally
-        going.
+        the Steve Bernard Foundation. Pick a time slot, bring your energy, and
+        help keep the rally going.
       </p>
-      <p>Donate on our<a href="https://www.justgiving.com/page/sbf-bbv"> Just giving page </a></p>
+      <p>
+        Donate on our
+        <a href="https://www.justgiving.com/page/sbf-bbv"> Just giving page </a>
+      </p>
       <p className="organiser">
         Organised by Bournemouth Beach Volleyball Community
       </p>
       <a href="#slots" className="primaryBtn">
         Book a time slot
       </a>
-      {/* <button onClick={seedSlots}>Seed Slots</button> */}
 
       <div className="instaLink">
         <a

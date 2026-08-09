@@ -210,6 +210,7 @@ p {
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 1rem;
   margin-top: 1.5rem;
+  margin-bottom: 1.4rem;
 }
 
 .slotGrid--hasSelection {
@@ -260,6 +261,10 @@ p {
   color: rgb(164, 27, 205)
 }
 
+.KOTC-text {
+  color: rgb(27, 205, 107);
+  font-size: 2rem;
+}
 .slotCard--night h3,
 .slotCard--night span {
   color: #fffdf8;

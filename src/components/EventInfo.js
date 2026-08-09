@@ -3,6 +3,19 @@ import { IoClose } from "react-icons/io5";
 import BookingForm from "./BookingForm";
 import { subscribeToSlots } from "../services/slots";
 
+const KOTC_SLOT_ID = "Rf1i5AxWhVBYq7u7bPnk";
+const KOTC_SLOT_LABEL = "Sat 22 Aug, 19:00–20:00";
+const KOTC_MAX_BOOKINGS = 6;
+const CHILDRENS_SLOT_ID = "ijnUNfhyB6wQbEBxwjUr";
+
+const isChildrensSlot = (slot) => {
+  return slot.id === CHILDRENS_SLOT_ID;
+};
+
+const isKOTCSlot = (slot) => {
+  return slot.id === KOTC_SLOT_ID;
+};
+
 const getSlotPeriod = (slot) => {
   if (slot.period === "night" || slot.dayPeriod === "night") {
     return "night";
@@ -43,9 +56,136 @@ const SlotBooking = ({ slots }) => {
   const handleSelectSlot = (slot) => {
     console.log("handle click ", slot);
 
-    if (slot.label === "Sat 22 Aug, 15:00–16:00") return;
+    if (isChildrensSlot(slot)) {
+      setSelectedSlot(null);
+      return;
+    }
 
     setSelectedSlot(slot);
+  };
+
+  const KOTCCard = ({ slot, selectedSlot }) => {
+    const kotcPlayers = Array.isArray(slot.kotc?.players)
+      ? slot.kotc.players
+      : [];
+    const spaces = KOTC_MAX_BOOKINGS - kotcPlayers.length;
+    const isSelected = selectedSlot?.id === slot.id;
+
+    return (
+      <>
+        <div className="teamStatus">
+          {Math.max(spaces, 0)} of {KOTC_MAX_BOOKINGS} pair spaces left
+          {spaces <= 0 ? (
+            <span
+              style={{
+                color: "red",
+                marginTop: 0,
+                borderColor: "red",
+                borderWidth: "1px",
+                borderStyle: "solid",
+                padding: "0.25rem",
+                borderRadius: "4px",
+              }}
+            >
+              Full
+            </span>
+          ) : (
+            ""
+          )}
+        </div>
+        <div>Please sign up in mixed pairs here</div>
+        {isSelected && kotcPlayers.length > 0 && (
+          <ul className="playerList">
+            <p className="playerList__title">Who is playing</p>
+            {kotcPlayers.map((player) => (
+              <div className="playerItem" key={player.bookingId}>
+                {player.name}
+              </div>
+            ))}
+          </ul>
+        )}
+      </>
+    );
+  };
+
+  const MainDetails = ({
+    slot,
+    teamSunsetSpaces,
+    teamSunriseSpaces,
+    selectedSlot,
+  }) => {
+    return (
+      <>
+        <span>{slot.sunset?.name || "Team 1"}</span>
+        <small>
+          <div className="teamStatus">
+            {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0} spaces
+            left
+            {teamSunsetSpaces === 0 ? (
+              <span
+                style={{
+                  color: "red",
+                  marginTop: 0,
+                  borderColor: "red",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  padding: "0.25rem",
+                  borderRadius: "4px",
+                }}
+              >
+                Full
+              </span>
+            ) : (
+              ""
+            )}
+          </div>
+          {slot.sunset?.players?.length > 0 && (
+            <ul className="playerList">
+              <p className="playerList__title">Who is playing</p>
+              {slot.sunset.players.map((player) => (
+                <div className="playerItem" key={player.bookingId}>
+                  {!selectedSlot ? convertLevel(player.ability) : player.name}
+                </div>
+              ))}
+            </ul>
+          )}
+        </small>
+        <span>{slot.sunrise?.name || "Team 2"}</span>
+        <small>
+          <div className="teamStatus">
+            {Math.max(teamSunriseSpaces, 0)} of {slot.sunrise?.max ?? 0} spaces
+            left
+            {teamSunriseSpaces === 0 ? (
+              <span
+                style={{
+                  color: "red",
+                  marginTop: 0,
+                  borderColor: "red",
+                  borderWidth: "1px",
+                  borderStyle: "solid",
+                  padding: "0.25rem",
+                  borderRadius: "4px",
+                }}
+              >
+                Full
+              </span>
+            ) : (
+              ""
+            )}
+          </div>
+          {slot.sunrise?.players?.length > 0 && (
+            <ul className="playerList">
+              <p className="playerList__title">Who is playing</p>
+              {slot.sunrise.players.map((player) => (
+                <div className="playerItem" key={player.bookingId}>
+                  {!selectedSlot ? convertLevel(player.ability) : player.name}
+                </div>
+              ))}
+            </ul>
+          )}
+        </small>{" "}
+      </>
+    );
   };
 
   return (
@@ -56,9 +196,23 @@ const SlotBooking = ({ slots }) => {
       <div
         className={`slotGrid${selectedSlot ? " slotGrid--hasSelection" : ""}`}
       >
-        {[...slots]
+        {slots
+          .filter((slot) => {
+            const hasCanonicalKOTCSlot = slots.some(
+              (availableSlot) => availableSlot.id === KOTC_SLOT_ID,
+            );
+
+            return (
+              slot.id === KOTC_SLOT_ID ||
+              !(
+                hasCanonicalKOTCSlot &&
+                slot.label === KOTC_SLOT_LABEL
+              )
+            );
+          })
           .sort((a, b) => Number(a.order ?? a.id) - Number(b.order ?? b.id))
           .map((slot) => {
+            const isKOTC = isKOTCSlot(slot);
             const slotPeriod = getSlotPeriod(slot);
             const teamSunsetSpaces =
               Number(slot.sunset?.max ?? 0) -
@@ -76,10 +230,7 @@ const SlotBooking = ({ slots }) => {
                 key={slot.id}
                 className={`slotCard slotCard--${slotPeriod}${
                   selectedSlot?.id === slot.id ? " slotCard--selected" : ""
-                }${
-                  slot?.id === "ijnUNfhyB6wQbEBxwjUr" ? " childrens" : ""
-                }`}
-
+                }${isChildrensSlot(slot) ? " childrens" : ""}`}
                 //onClick={() => setSelectedSlot(slot)}
                 onClick={() => handleSelectSlot(slot)}
               >
@@ -104,88 +255,36 @@ const SlotBooking = ({ slots }) => {
                     <IoClose aria-hidden="true" />
                   </span>
                 )}
-                {slot?.id === "ijnUNfhyB6wQbEBxwjUr"? <h3 className="childrens-text">Children's Hour</h3> : ""}
+                {isChildrensSlot(slot) ? (
+                  <h3 className="childrens-text">Children's Hour</h3>
+                ) : (
+                  ""
+                )}
+
+                {isKOTC ? (
+                  <h3 className="KOTC-text">KOTC Hour</h3>
+                ) : (
+                  ""
+                )}
                 <h3>{slot.label}</h3>
-                
-                {slot?.id != "ijnUNfhyB6wQbEBxwjUr"? 
-                <>
-                <span>{slot.sunset?.name || "Team 1"}</span>
-                <small>
-                  <div className="teamStatus">
-                    {Math.max(teamSunsetSpaces, 0)} of {slot.sunset?.max ?? 0}{" "}
-                    spaces left
-                    {teamSunsetSpaces === 0 ? (
-                      <span
-                        style={{
-                          color: "red",
-                          marginTop: 0,
-                          borderColor: "red",
-                          borderWidth: "1px",
-                          borderStyle: "solid",
-                          padding: "0.25rem",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        Full
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  {slot.sunset?.players?.length > 0 && (
-                    <ul className="playerList">
-                      <p className="playerList__title">
-                        Who is playing
-                      </p>
-                      {slot.sunset.players.map((player) => (
-                        <div className="playerItem" key={player.bookingId}>
-                          {!selectedSlot
-                            ? convertLevel(player.ability)
-                            : player.name}
-                        </div>
-                      ))}
-                    </ul>
-                  )}
-                </small>
-                <span>{slot.sunrise?.name || "Team 2"}</span>
-                <small>
-                  <div className="teamStatus">
-                    {Math.max(teamSunriseSpaces, 0)} of {slot.sunrise?.max ?? 0}{" "}
-                    spaces left
-                    {teamSunriseSpaces === 0 ? (
-                      <span
-                        style={{
-                          color: "red",
-                          marginTop: 0,
-                          borderColor: "red",
-                          borderWidth: "1px",
-                          borderStyle: "solid",
-                          padding: "0.25rem",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        Full
-                      </span>
-                      
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  {slot.sunrise?.players?.length > 0 && (
-                    <ul className="playerList">
-                      <p className="playerList__title">
-                        Who is playing
-                      </p>
-                      {slot.sunrise.players.map((player) => (
-                        <div className="playerItem" key={player.bookingId}>
-                          {!selectedSlot
-                            ? convertLevel(player.ability)
-                            : player.name}
-                        </div>
-                      ))}
-                    </ul>
-                  )}
-                </small> </>: <p>Please contact us on IG to enter your children</p>}
+
+                {isChildrensSlot(slot) ? (
+                  <p>Please contact us on IG to enter your children</p>
+                ) : !isKOTC ? (
+                  <MainDetails
+                    slot={slot}
+                    teamSunsetSpaces={teamSunsetSpaces}
+                    teamSunriseSpaces={teamSunriseSpaces}
+                    selectedSlot={selectedSlot}
+                  />
+                ) : (
+                  <KOTCCard
+                    slot={slot}
+                    teamSunsetSpaces={teamSunsetSpaces}
+                    teamSunriseSpaces={teamSunriseSpaces}
+                    selectedSlot={selectedSlot}
+                  />
+                )}
               </button>
             );
           })}
