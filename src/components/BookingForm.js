@@ -21,7 +21,7 @@ const getTeamOptions = (slot) => {
     }));
 };
 
-const BookingForm = ({ selectedSlot }) => {
+const StandardBookingForm = ({ selectedSlot }) => {
   const teamOptions = useMemo(
     () => getTeamOptions(selectedSlot),
     [selectedSlot],
@@ -206,4 +206,91 @@ const BookingForm = ({ selectedSlot }) => {
   );
 };
 
+const KOTCBookingForm = ({selectedSlot}) => {
+
+  const handleKOTCSubmit = async (e) => {
+
+    try {
+      await createBooking({
+        name: trimmedName,
+        email: trimmedEmail,
+        whatsapp: trimmedWhatsapp,
+        ability,
+        teamKey,
+        teamName: selectedTeam.name,
+        teamMaxCapacity: selectedTeam.max,
+        slotId: selectedSlot.id,
+        slotLabel: selectedSlot.label,
+        status: "booked",
+      })
+
+
+    } catch (error) {
+      if (error instanceof BookingConflictError) {
+        setFeedback({
+          type: "error",
+          text: "Sorry, that team is already full for this slot. Please choose another team or slot.",
+        });
+      } else {
+        setFeedback({
+          type: "error",
+          text: "Sorry, we could not complete your booking request. Please try again.",
+        });
+      }
+    }
+
+  }
+
+
+  
+
+    const [player1Name, setPlayer1Name] = useState("");
+  const [player2name, setPlayer2Name] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
+  const [email, setEmail] = useState("");
+  const [feedback, setFeedback] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  return (
+  <section className="bookingSection">  
+    <form onSubmit={handleKOTCSubmit} className="bookingForm">
+      <label>
+        <span>Player 1 Name</span>
+        <input
+          value={player1Name}
+          onChange={(e) => setPlayer1Name(e.value.target)}></input>
+      </label>
+      <label>
+        <span>Player 2 Name</span>
+        <input
+          value={player2name}
+          onChange={(e) => setPlayer2Name(e.value.target)}></input>
+      </label>
+      <label>
+        <span>Email</span>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.value.target)}></input>
+      </label>
+      <label>
+        <span>Whatsapp</span>
+        <input
+          value={whatsapp}
+          onChange={(e) => setWhatsapp(e.value.target)}></input>
+      </label>
+      <button type="submit">Submit</button>
+      
+      </form>
+    </section>
+  );
+};
+
+const BookingForm = ({ selectedSlot }) => {
+  console.log(selectedSlot);
+  if (selectedSlot.id === 'Rf1i5AxWhVBYq7u7bPnk') {
+    return <KOTCBookingForm selectedSlot={selectedSlot}/>
+  } else {
+    return <StandardBookingForm selectedSlot={selectedSlot} />
+  }
+};
 export default BookingForm;
