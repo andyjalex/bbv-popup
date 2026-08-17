@@ -7,6 +7,8 @@ import {
 
 const KOTC_SLOT_ID = "Rf1i5AxWhVBYq7u7bPnk";
 const KOTC_TEAM_KEY = "kotc";
+
+const KOTC_NIGHT_SLOT_ID ="PLsxV4nuVRwB8EwclCM0";
 const KOTC_MAX_BOOKINGS = 6;
 const CHILDRENS_SLOT_ID = "ijnUNfhyB6wQbEBxwjUr";
 
@@ -15,10 +17,10 @@ const isChildrensSlot = (slot) => {
 };
 
 const isKOTCSlot = (slot) => {
-  return slot.id === KOTC_SLOT_ID;
+  return slot.id === KOTC_SLOT_ID || slot.id === KOTC_NIGHT_SLOT_ID;
 };
 
-const getTeamOptions = (slot) => {
+const getTeamOptions = (slot) => {  
   return ["sunrise", "sunset"]
     .filter((teamKey) => slot[teamKey])
     .map((teamKey) => ({
@@ -397,6 +399,8 @@ const BookingForm = ({ selectedSlot }) => {
   if (isChildrensSlot(selectedSlot)) {
     return null;
   }
+
+  console.log(selectedSlot)
 
   if (isKOTCSlot(selectedSlot)) {
     return <KOTCBookingForm selectedSlot={selectedSlot} />;
