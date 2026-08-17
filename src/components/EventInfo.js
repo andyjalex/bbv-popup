@@ -4,16 +4,27 @@ import BookingForm from "./BookingForm";
 import { subscribeToSlots } from "../services/slots";
 
 const KOTC_SLOT_ID = "Rf1i5AxWhVBYq7u7bPnk";
-const KOTC_SLOT_LABEL = "Sat 22 Aug, 19:00–20:00";
+const KOTC_NIGHT_SLOT_ID = "PLsxV4nuVRwB8EwclCM0";
 const KOTC_MAX_BOOKINGS = 6;
 const CHILDRENS_SLOT_ID = "ijnUNfhyB6wQbEBxwjUr";
+const LASTSLOT = "m6sVVDAfbIuDXg4ldHqI";
+const LAST_MAX_BOOKINGS = 12;
 
 const isChildrensSlot = (slot) => {
   return slot.id === CHILDRENS_SLOT_ID;
 };
 
 const isKOTCSlot = (slot) => {
-  return slot.id === KOTC_SLOT_ID;
+  return slot.id === KOTC_SLOT_ID || slot.id === KOTC_NIGHT_SLOT_ID;
+};
+
+const isNightKOTCSlot = (slot) => {
+  console.log(slot)
+  return slot.id === KOTC_NIGHT_SLOT_ID;
+};
+
+const isLastSlot = (slot) => {
+  return slot.id === LASTSLOT;
 };
 
 const getSlotPeriod = (slot) => {
@@ -93,7 +104,13 @@ const SlotBooking = ({ slots }) => {
             ""
           )}
         </div>
-        <div>Please sign up in mixed pairs here</div>
+        {isNightKOTCSlot(slot) ? (
+          <div>Please sign up in pairs — any combination</div>
+        ) : (
+          
+          <div>Please sign up in mixed pairs</div>
+        )}
+
         {isSelected && kotcPlayers.length > 0 && (
           <ul className="playerList">
             <p className="playerList__title">Who is playing</p>
@@ -197,22 +214,10 @@ const SlotBooking = ({ slots }) => {
         className={`slotGrid${selectedSlot ? " slotGrid--hasSelection" : ""}`}
       >
         {slots
-          .filter((slot) => {
-            const hasCanonicalKOTCSlot = slots.some(
-              (availableSlot) => availableSlot.id === KOTC_SLOT_ID,
-            );
-
-            return (
-              slot.id === KOTC_SLOT_ID ||
-              !(
-                hasCanonicalKOTCSlot &&
-                slot.label === KOTC_SLOT_LABEL
-              )
-            );
-          })
           .sort((a, b) => Number(a.order ?? a.id) - Number(b.order ?? b.id))
           .map((slot) => {
             const isKOTC = isKOTCSlot(slot);
+            const isLast = isLastSlot(slot)
             const slotPeriod = getSlotPeriod(slot);
             const teamSunsetSpaces =
               Number(slot.sunset?.max ?? 0) -
@@ -261,11 +266,10 @@ const SlotBooking = ({ slots }) => {
                   ""
                 )}
 
-                {isKOTC ? (
-                  <h3 className="KOTC-text">KOTC Hour</h3>
-                ) : (
-                  ""
-                )}
+                {isKOTC ? <h3 className="KOTC-text">KOTC Hour</h3> : ""}
+                
+
+                {isLast ? <h3 className="KOTC-text">6's Hour</h3> : ""}
                 <h3>{slot.label}</h3>
 
                 {isChildrensSlot(slot) ? (
