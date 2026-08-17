@@ -269,7 +269,7 @@ const SlotBooking = ({ slots }) => {
                 {isKOTC ? <h3 className="KOTC-text">KOTC Hour</h3> : ""}
                 
 
-                {isLast ? <h3 className="KOTC-text">6's Hour</h3> : ""}
+                {isLast ? <h3 className="KOTC-text">6's Final Hour</h3> : ""}
                 <h3>{slot.label}</h3>
 
                 {isChildrensSlot(slot) ? (
