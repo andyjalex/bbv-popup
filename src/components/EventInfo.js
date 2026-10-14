@@ -62,17 +62,19 @@ const convertLevel = (level) => {
 };
 
 const SlotBooking = ({ slots }) => {
-  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedSlotId, setSelectedSlotId] = useState(null);
+
+  // Always the latest version of the slot from Firestore
+  const selectedSlot = slots.find((s) => s.id === selectedSlotId) ?? null;
 
   const handleSelectSlot = (slot) => {
-    console.log("handle click ", slot);
 
     if (isChildrensSlot(slot)) {
-      setSelectedSlot(null);
+      setSelectedSlotId(null);
       return;
     }
 
-    setSelectedSlot(slot);
+    setSelectedSlotId(slot.id);
   };
 
   const KOTCCard = ({ slot, selectedSlot }) => {
@@ -247,13 +249,13 @@ const SlotBooking = ({ slots }) => {
                     tabIndex="0"
                     onClick={(event) => {
                       event.stopPropagation();
-                      setSelectedSlot(null);
+                      setSelectedSlotId(null);
                     }}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
                         event.preventDefault();
                         event.stopPropagation();
-                        setSelectedSlot(null);
+                        setSelectedSlotId(null);
                       }
                     }}
                   >

@@ -53,7 +53,8 @@ const StandardBookingForm = ({ selectedSlot }) => {
     const availableTeam = teamOptions.find((team) => team.spaces > 0);
     setTeamKey(availableTeam?.key || teamOptions[0]?.key || "");
     setFeedback(null);
-  }, [selectedSlot.id, teamOptions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSlot.id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

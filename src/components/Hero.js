@@ -1,6 +1,3 @@
-import { seedSlots } from "../services/seedSlots";
-import { exportFirestore } from "../services/getData"; // adjust path
-
 import insta from "../assets/Insta.png";
 const Hero = () => {
   return (
@@ -22,6 +19,9 @@ const Hero = () => {
       <a href="#slots" className="primaryBtn">
         Book a time slot
       </a>
+      {/* <button type="button" className="primaryBtn" onClick={exportFirestore}>
+        Export bookings
+      </button> */}
 
       <div className="instaLink">
         <a

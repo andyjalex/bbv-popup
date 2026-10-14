@@ -53,7 +53,7 @@ const NavWrapper = styled.nav`
     display: none;
   }
   .nav-contact {
-    border: 1px sold var(--clr-white);
+    border: 1px solid var(--clr-white);
     border-radius: 8px;
   }
   .main-header__brand {
